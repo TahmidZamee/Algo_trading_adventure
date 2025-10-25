@@ -7,7 +7,7 @@ Developed as part of an internship recruitment task.
 
 ## Project Overview
 
-Alex, a budding programmer, starts their algorithmic trading adventure with a budget of **$5000**.  
+Someone starts their algorithmic trading adventure with a budget of **$5000**.  
 This Python tool uses **moving averages (MA50 & MA200)** to identify buy and sell opportunities in the stock market.
 
 The strategy:
