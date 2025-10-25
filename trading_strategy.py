@@ -50,7 +50,7 @@ class AlgoTradingAdventure:
 
         # Check again
         if 'MA50' not in self.data.columns or 'MA200' not in self.data.columns:
-            print("❌ Error: MA50 or MA200 columns still missing. Aborting simulation.")
+            print("Error: MA50 or MA200 columns still missing. Aborting simulation.")
             print("Columns currently available:", self.data.columns.tolist())
             return
 
