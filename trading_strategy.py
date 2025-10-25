@@ -17,11 +17,9 @@ class AlgoTradingAdventure:
         print(f"Downloading data for {self.symbol}...")
         self.data = yf.download(self.symbol, start=self.start_date, end=self.end_date)
 
-        # Handle multi-index column issue (yfinance sometimes returns multi-level columns)
         if isinstance(self.data.columns, pd.MultiIndex):
             self.data.columns = self.data.columns.get_level_values(0)
-
-        # Clean data
+            
         self.data = self.data[~self.data.index.duplicated(keep='first')]
         self.data = self.data.ffill()
         print(f"Data download complete. Rows: {len(self.data)} | Columns: {self.data.columns.tolist()}")
@@ -43,18 +41,15 @@ class AlgoTradingAdventure:
     def simulate_trading(self):
         print("Starting simulation...")
 
-        # Auto-calculate moving averages if missing
         if 'MA50' not in self.data.columns or 'MA200' not in self.data.columns:
             print("Moving averages not found — calculating now.")
             self.calculate_moving_averages()
 
-        # Check again
         if 'MA50' not in self.data.columns or 'MA200' not in self.data.columns:
             print("Error: MA50 or MA200 columns still missing. Aborting simulation.")
             print("Columns currently available:", self.data.columns.tolist())
             return
 
-        # Drop rows with missing MAs
         self.data = self.data.dropna(subset=['MA50', 'MA200'])
         print(f"Simulation rows after cleaning: {len(self.data)}")
 
@@ -67,15 +62,13 @@ class AlgoTradingAdventure:
             ma50_today = float(row_today['MA50'])
             ma200_today = float(row_today['MA200'])
 
-            # Golden Cross (Buy)
+
             if not self.position and ma50_prev < ma200_prev and ma50_today > ma200_today:
                 self.buy(float(row_today['Close']), row_today.name)
 
-            # Death Cross (Sell)
             elif self.position and ma50_prev > ma200_prev and ma50_today < ma200_today:
                 self.sell(float(row_today['Close']), row_today.name)
 
-        # Force close at end if still open
         if self.position:
             self.sell(float(self.data.iloc[-1]['Close']), self.data.index[-1])
 
